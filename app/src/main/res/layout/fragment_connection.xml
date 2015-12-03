@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<EditText
+		android:id="@+id/edit_cxn_name"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/str_cxn_name" />
+
+	<EditText
+		android:id="@+id/edit_cxn_password"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:hint="@string/str_cxn_password" />
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<Button
+			android:id="@+id/btn_cxn_ap"
+			android:layout_weight="1"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:text="@string/str_cxn_ap" />
+
+		<Button
+			android:id="@+id/btn_cxn_sta"
+			android:layout_weight="1"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:text="@string/str_cxn_sta" />
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<Button
+			android:id="@+id/btn_cxn_login"
+			android:layout_weight="1"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:text="@string/str_cxn_login" />
+
+		<Button
+			android:id="@+id/btn_cxn_ip"
+			android:layout_weight="1"
+			android:layout_width="0px"
+			android:layout_height="wrap_content"
+			android:text="@string/str_cxn_ip" />
+
+	</LinearLayout>
+
+</LinearLayout>
