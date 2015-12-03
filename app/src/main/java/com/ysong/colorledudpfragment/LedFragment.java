@@ -13,7 +13,6 @@ import android.widget.SeekBar;
 public class LedFragment extends Fragment {
 
 	private class updateAsyncTask extends AsyncTask<Void, String, Void> {
-
 		@Override
 		protected Void doInBackground(Void... v) {
 			callback.setSocketLocked(true);
@@ -36,26 +35,7 @@ public class LedFragment extends Fragment {
 		protected void onProgressUpdate(String... msg) {
 			callback.toastShow(msg[0]);
 		}
-
 	}
-//	private class updateThread implements Runnable {
-//		@Override
-//		public void run() {
-//			callback.setSocketLocked(true);
-//			while (updateThreadEnabled) {
-//				try {
-//					if (update != null) {
-//						callback.socketSend(update.getBytes());
-//						update = null;
-//					}
-//					Thread.sleep(25);
-//				} catch (Exception e) {
-//					toastShowThread(e.toString());
-//				}
-//			}
-//			callback.setSocketLocked(false);
-//		}
-//	}
 
 	private MainInterface callback = null;
 	private Button btnSktStart = null;
@@ -92,7 +72,6 @@ public class LedFragment extends Fragment {
 					callback.toastShow("No IP Applied");
 				} else {
 					updateThreadEnabled = true;
-//					new Thread(new updateThread()).start();
 					new updateAsyncTask().execute();
 					setSeekBarEnabled(true, true, true, true);
 				}
@@ -194,15 +173,6 @@ public class LedFragment extends Fragment {
 		callback = null;
 		super.onDetach();
 	}
-
-//	private void toastShowThread(final String str) {
-//		callback.useUiThread(new Runnable() {
-//			@Override
-//			public void run() {
-//				callback.toastShow(str);
-//			}
-//		});
-//	}
 
 	private void setSeekBarEnabled(boolean red, boolean green, boolean blue, boolean hue) {
 		seekLedRed.setEnabled(red);

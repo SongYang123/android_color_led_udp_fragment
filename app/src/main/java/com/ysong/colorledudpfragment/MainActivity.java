@@ -69,10 +69,6 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
 		}
 	}
 
-//	public void useUiThread(Runnable runnable) {
-//		runOnUiThread(runnable);
-//	}
-
 	@Override
 	public void toastShow(String str) {
 		toast.setText(str);

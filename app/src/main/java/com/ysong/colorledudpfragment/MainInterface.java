@@ -1,10 +1,7 @@
 package com.ysong.colorledudpfragment;
 
-import java.net.DatagramSocket;
-
 public interface MainInterface {
 
-//	void useUiThread(Runnable runnable);
 	void toastShow(String str);
 	void setIP(String ip);
 	boolean invalidIP();
