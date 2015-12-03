@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
@@ -14,14 +15,14 @@
             android:layout_weight="1"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:text="@string/str_skt_start" />
+            android:text="@string/str_skt_start"/>
 
         <Button
             android:id="@+id/btn_led_stop"
             android:layout_weight="1"
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:text="@string/str_skt_stop" />
+            android:text="@string/str_skt_stop"/>
 
     </LinearLayout>
 
@@ -29,7 +30,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/str_led_red"
-        style="@style/text" />
+        style="@style/text"/>
 
     <SeekBar
         android:id="@+id/seek_led_red"
@@ -37,13 +38,13 @@
         android:layout_height="wrap_content"
         android:max="255"
         android:progress="0"
-        style="@style/bar" />
+        style="@style/bar"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/str_led_green"
-        style="@style/text" />
+        style="@style/text"/>
 
     <SeekBar
         android:id="@+id/seek_led_green"
@@ -51,13 +52,13 @@
         android:layout_height="wrap_content"
         android:max="255"
         android:progress="0"
-        style="@style/bar" />
+        style="@style/bar"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/str_led_blue"
-        style="@style/text" />
+        style="@style/text"/>
 
     <SeekBar
         android:id="@+id/seek_led_blue"
@@ -65,13 +66,13 @@
         android:layout_height="wrap_content"
         android:max="255"
         android:progress="0"
-        style="@style/bar" />
+        style="@style/bar"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/str_led_hue"
-        style="@style/text" />
+        style="@style/text"/>
 
     <SeekBar
         android:id="@+id/seek_led_hue"
@@ -79,6 +80,6 @@
         android:layout_height="wrap_content"
         android:max="240"
         android:progress="0"
-        style="@style/bar" />
+        style="@style/bar"/>
 
 </LinearLayout>

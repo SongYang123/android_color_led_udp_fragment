@@ -1,7 +1,6 @@
 package com.ysong.colorledudpfragment;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,10 +11,9 @@ import android.widget.SeekBar;
 
 public class LedFragment extends Fragment {
 
-	private class updateAsyncTask extends AsyncTask<Void, String, Void> {
-
+	private class updateThread implements Runnable {
 		@Override
-		protected Void doInBackground(Void... v) {
+		public void run() {
 			callback.setSocketLocked(true);
 			while (updateThreadEnabled) {
 				try {
@@ -25,37 +23,12 @@ public class LedFragment extends Fragment {
 					}
 					Thread.sleep(25);
 				} catch (Exception e) {
-					publishProgress(e.toString());
+					toastShowThread(e.toString());
 				}
 			}
 			callback.setSocketLocked(false);
-			return null;
 		}
-
-		@Override
-		protected void onProgressUpdate(String... msg) {
-			callback.toastShow(msg[0]);
-		}
-
 	}
-//	private class updateThread implements Runnable {
-//		@Override
-//		public void run() {
-//			callback.setSocketLocked(true);
-//			while (updateThreadEnabled) {
-//				try {
-//					if (update != null) {
-//						callback.socketSend(update.getBytes());
-//						update = null;
-//					}
-//					Thread.sleep(25);
-//				} catch (Exception e) {
-//					toastShowThread(e.toString());
-//				}
-//			}
-//			callback.setSocketLocked(false);
-//		}
-//	}
 
 	private MainInterface callback = null;
 	private Button btnSktStart = null;
@@ -92,8 +65,7 @@ public class LedFragment extends Fragment {
 					callback.toastShow("No IP Applied");
 				} else {
 					updateThreadEnabled = true;
-//					new Thread(new updateThread()).start();
-					new updateAsyncTask().execute();
+					new Thread(new updateThread()).start();
 					setSeekBarEnabled(true, true, true, true);
 				}
 			}
@@ -105,7 +77,7 @@ public class LedFragment extends Fragment {
 					setSeekBarEnabled(false, false, false, false);
 					updateThreadEnabled = false;
 				} else {
-					callback.toastShow("Stopped Already");
+					callback.toastShow("Stop Already");
 				}
 			}
 		});
@@ -195,14 +167,14 @@ public class LedFragment extends Fragment {
 		super.onDetach();
 	}
 
-//	private void toastShowThread(final String str) {
-//		callback.useUiThread(new Runnable() {
-//			@Override
-//			public void run() {
-//				callback.toastShow(str);
-//			}
-//		});
-//	}
+	private void toastShowThread(final String str) {
+		callback.useUiThread(new Runnable() {
+			@Override
+			public void run() {
+				callback.toastShow(str);
+			}
+		});
+	}
 
 	private void setSeekBarEnabled(boolean red, boolean green, boolean blue, boolean hue) {
 		seekLedRed.setEnabled(red);

@@ -16,14 +16,14 @@
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:text="@string/str_main_cxn"
-            android:onClick="onCxnHandler" />
+            android:onClick="onCxnHandler"/>
 
         <Button
             android:layout_weight="1"
             android:layout_width="0px"
             android:layout_height="wrap_content"
             android:text="@string/str_main_led"
-            android:onClick="onLedHandler" />
+            android:onClick="onLedHandler"/>
 
     </LinearLayout>
 

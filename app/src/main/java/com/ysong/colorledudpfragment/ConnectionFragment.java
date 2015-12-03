@@ -2,7 +2,6 @@ package com.ysong.colorledudpfragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,10 +13,9 @@ import android.widget.EditText;
 
 public class ConnectionFragment extends Fragment {
 
-	private class CxnLoginAsyncTask extends AsyncTask<Void, String, Void> {
-
+	private class CxnLoginThread implements Runnable {
 		@Override
-		protected Void doInBackground(Void... v) {
+		public void run() {
 			callback.setSocketLocked(true);
 			try {
 				byte[] buf = new byte[32];
@@ -25,28 +23,20 @@ public class ConnectionFragment extends Fragment {
 				callback.socketSend(("P" + password).getBytes());
 				int length = callback.socketReceive(buf, LOGIN_TIMEOUT);
 				if (new String(buf, 0, length).equals("OK")) {
-					publishProgress("Station Login Success");
+					toastShowThread("Station Login Success");
 				} else {
-					publishProgress("Station Login Fail");
+					toastShowThread("Station Login Fail");
 				}
 			} catch (Exception e) {
-				publishProgress(e.toString());
+				toastShowThread(e.toString());
 			}
 			callback.setSocketLocked(false);
-			return null;
 		}
-
-		@Override
-		protected void onProgressUpdate(String... msg) {
-			callback.toastShow(msg[0]);
-		}
-
 	}
 
-	private class CxnIPAsyncTask extends AsyncTask<Void, String, Void> {
-
+	private class CxnIPThread implements Runnable {
 		@Override
-		protected Void doInBackground(Void... v) {
+		public void run() {
 			callback.setSocketLocked(true);
 			try {
 				byte[] buf = new byte[32];
@@ -54,71 +44,19 @@ public class ConnectionFragment extends Fragment {
 				int length = callback.socketReceive(buf, GET_IP_TIMEOUT);
 				String str = new String(buf, 0, length);
 				if (str.equals("FAIL")) {
-					publishProgress("Get Station IP Fail");
+					toastShowThread("Get Station IP Fail");
 				} else {
 					SharedPreferences.Editor ed = sp.edit();
 					ed.putString("ip", str);
 					ed.commit();
-					publishProgress("Get Station IP Success: " + str);
+					toastShowThread("Get Station IP Success: " + str);
 				}
 			} catch (Exception e) {
-				publishProgress(e.toString());
+				toastShowThread(e.toString());
 			}
 			callback.setSocketLocked(false);
-			return null;
 		}
-
-		@Override
-		protected void onProgressUpdate(String... msg) {
-			callback.toastShow(msg[0]);
-		}
-
 	}
-
-//	private class CxnLoginThread implements Runnable {
-//		@Override
-//		public void run() {
-//			callback.setSocketLocked(true);
-//			try {
-//				byte[] buf = new byte[32];
-//				callback.socketSend(("N" + name).getBytes());
-//				callback.socketSend(("P" + password).getBytes());
-//				int length = callback.socketReceive(buf, LOGIN_TIMEOUT);
-//				if (new String(buf, 0, length).equals("OK")) {
-//					toastShowThread("Station Login Success");
-//				} else {
-//					toastShowThread("Station Login Fail");
-//				}
-//			} catch (Exception e) {
-//				toastShowThread(e.toString());
-//			}
-//			callback.setSocketLocked(false);
-//		}
-//	}
-
-//	private class CxnIPThread implements Runnable {
-//		@Override
-//		public void run() {
-//			callback.setSocketLocked(true);
-//			try {
-//				byte[] buf = new byte[32];
-//				callback.socketSend("IP".getBytes());
-//				int length = callback.socketReceive(buf, GET_IP_TIMEOUT);
-//				String str = new String(buf, 0, length);
-//				if (str.equals("FAIL")) {
-//					toastShowThread("Get Station IP Fail");
-//				} else {
-//					SharedPreferences.Editor ed = sp.edit();
-//					ed.putString("ip", str);
-//					ed.commit();
-//					toastShowThread("Get Station IP Success: " + str);
-//				}
-//			} catch (Exception e) {
-//				toastShowThread(e.toString());
-//			}
-//			callback.setSocketLocked(false);
-//		}
-//	}
 
 	private static final int LOGIN_TIMEOUT = 50000;
 	private static final int GET_IP_TIMEOUT = 5000;
@@ -187,8 +125,7 @@ public class ConnectionFragment extends Fragment {
 				} else if (callback.getSocketLocked()) {
 					callback.toastShow("Socket Occupied");
 				} else {
-//					new Thread(new CxnLoginThread()).start();
-					new CxnLoginAsyncTask().execute();
+					new Thread(new CxnLoginThread()).start();
 				}
 			}
 		});
@@ -198,8 +135,7 @@ public class ConnectionFragment extends Fragment {
 				if (callback.getSocketLocked()) {
 					callback.toastShow("Socket Occupied");
 				} else {
-//					new Thread(new CxnIPThread()).start();
-					new CxnIPAsyncTask().execute();
+					new Thread(new CxnIPThread()).start();
 				}
 			}
 		});
@@ -224,14 +160,14 @@ public class ConnectionFragment extends Fragment {
 		super.onDetach();
 	}
 
-//	private void toastShowThread(final String str) {
-//		callback.useUiThread(new Runnable() {
-//			@Override
-//			public void run() {
-//				callback.toastShow(str);
-//			}
-//		});
-//	}
+	private void toastShowThread(final String str) {
+		callback.useUiThread(new Runnable() {
+			@Override
+			public void run() {
+				callback.toastShow(str);
+			}
+		});
+	}
 
 	private void setStationWidgetEnabled(boolean enabled) {
 		editCxnName.setEnabled(enabled);
