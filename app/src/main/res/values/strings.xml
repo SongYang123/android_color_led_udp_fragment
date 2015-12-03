@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Color LED UDP Fragment</string>
+    <string name="str_main_cxn">Connection</string>
+    <string name="str_main_led">Color LED</string>
+    <string name="str_cxn_name">Enter router name</string>
+    <string name="str_cxn_password">Enter router password</string>
+    <string name="str_cxn_ap">Access Point</string>
+    <string name="str_cxn_sta">Station</string>
+    <string name="str_cxn_login">Router Login</string>
+    <string name="str_cxn_ip">Get IP</string>
+    <string name="str_skt_start">Start</string>
+    <string name="str_skt_stop">Stop</string>
+    <string name="str_led_red">Red</string>
+    <string name="str_led_green">Green</string>
+    <string name="str_led_blue">Blue</string>
+    <string name="str_led_hue">Hue</string>
+</resources>
