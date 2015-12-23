@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
 	public static final String IP_AP = "192.168.4.1";
 	public static final String IP_INVALID = "0.0.0.0";
 	private static final int PORT = 5678;
+
 	private LedFragment ledFragment = null;
 	private ConnectionFragment connectionFragment = null;
 	private Fragment shownFragment = null;
@@ -106,5 +107,18 @@ public class MainActivity extends AppCompatActivity implements MainInterface {
 	@Override
 	public void socketSend(byte[] buf) throws Exception {
 		socket.send(new DatagramPacket(buf, buf.length, InetAddress.getByName(ip), PORT));
+	}
+
+	@Override
+	public int socketFlush(byte[] buf) {
+		DatagramPacket pkt = new DatagramPacket(buf, buf.length);
+		try {
+			socket.setSoTimeout(1);
+			while (true) {
+				socket.receive(pkt);
+			}
+		} catch (Exception e) {
+		}
+		return pkt.getLength();
 	}
 }

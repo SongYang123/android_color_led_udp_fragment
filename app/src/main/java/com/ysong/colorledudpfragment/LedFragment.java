@@ -12,32 +12,7 @@ import android.widget.SeekBar;
 
 public class LedFragment extends Fragment {
 
-	private class updateAsyncTask extends AsyncTask<Void, String, Void> {
-		@Override
-		protected Void doInBackground(Void... v) {
-			callback.setSocketLocked(true);
-			while (updateThreadEnabled) {
-				try {
-					if (update != null) {
-						callback.socketSend(update.getBytes());
-						update = null;
-					}
-					Thread.sleep(25);
-				} catch (Exception e) {
-					publishProgress(e.toString());
-				}
-			}
-			callback.setSocketLocked(false);
-			return null;
-		}
-
-		@Override
-		protected void onProgressUpdate(String... msg) {
-			callback.toastShow(msg[0]);
-		}
-	}
-
-	private MainInterface callback = null;
+	private MainInterface mainInterface = null;
 	private Button btnSktStart = null;
 	private Button btnSktStop = null;
 	private SeekBar seekLedRed = null;
@@ -47,10 +22,35 @@ public class LedFragment extends Fragment {
 	private boolean updateThreadEnabled = false;
 	private String update = null;
 
+	private class UpdateAsyncTask extends AsyncTask<Void, String, Void> {
+		@Override
+		protected Void doInBackground(Void... v) {
+			mainInterface.setSocketLocked(true);
+			while (updateThreadEnabled) {
+				try {
+					if (update != null) {
+						mainInterface.socketSend(update.getBytes());
+						update = null;
+					}
+					Thread.sleep(25);
+				} catch (Exception e) {
+					publishProgress(e.toString());
+				}
+			}
+			mainInterface.setSocketLocked(false);
+			return null;
+		}
+
+		@Override
+		protected void onProgressUpdate(String... msg) {
+			mainInterface.toastShow(msg[0]);
+		}
+	}
+
 	@Override
 	public void onAttach(Context context) {
 		super.onAttach(context);
-		callback = (MainInterface)context;
+		mainInterface = (MainInterface)context;
 	}
 
 	@Override
@@ -66,13 +66,13 @@ public class LedFragment extends Fragment {
 		btnSktStart.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (callback.getSocketLocked()) {
-					callback.toastShow("Socket Occupied");
-				} else if (callback.invalidIP()) {
-					callback.toastShow("No IP Applied");
+				if (mainInterface.getSocketLocked()) {
+					mainInterface.toastShow("Socket Occupied");
+				} else if (mainInterface.invalidIP()) {
+					mainInterface.toastShow("No IP Applied");
 				} else {
 					updateThreadEnabled = true;
-					new updateAsyncTask().execute();
+					new UpdateAsyncTask().execute();
 					setSeekBarEnabled(true, true, true, true);
 				}
 			}
@@ -84,7 +84,7 @@ public class LedFragment extends Fragment {
 					setSeekBarEnabled(false, false, false, false);
 					updateThreadEnabled = false;
 				} else {
-					callback.toastShow("Stopped Already");
+					mainInterface.toastShow("Stopped Already");
 				}
 			}
 		});
@@ -170,7 +170,7 @@ public class LedFragment extends Fragment {
 
 	@Override
 	public void onDetach() {
-		callback = null;
+		mainInterface = null;
 		super.onDetach();
 	}
 

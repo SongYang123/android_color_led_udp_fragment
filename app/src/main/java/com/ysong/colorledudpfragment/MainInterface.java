@@ -9,4 +9,5 @@ public interface MainInterface {
 	void setSocketLocked(boolean locked);
     int socketReceive(byte[] buf, int timeout) throws Exception;
 	void socketSend(byte[] buf) throws Exception;
+	int socketFlush(byte[] buf);
 }

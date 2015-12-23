@@ -14,15 +14,28 @@ import android.widget.EditText;
 
 public class ConnectionFragment extends Fragment {
 
+	private static final int LOGIN_TIMEOUT = 50000;
+	private static final int GET_IP_TIMEOUT = 5000;
+
+	private MainInterface mainInterface = null;
+	private EditText editCxnName = null;
+	private EditText editCxnPassword = null;
+	private Button btnCxnLogin = null;
+	private Button btnCxnIP = null;
+	private SharedPreferences sp = null;
+	private String name = null;
+	private String password = null;
+
 	private class CxnLoginAsyncTask extends AsyncTask<Void, String, Void> {
 		@Override
 		protected Void doInBackground(Void... v) {
-			callback.setSocketLocked(true);
+			mainInterface.setSocketLocked(true);
 			try {
 				byte[] buf = new byte[32];
-				callback.socketSend(("N" + name).getBytes());
-				callback.socketSend(("P" + password).getBytes());
-				int length = callback.socketReceive(buf, LOGIN_TIMEOUT);
+				mainInterface.socketFlush(buf);
+				mainInterface.socketSend(("N" + name).getBytes());
+				mainInterface.socketSend(("P" + password).getBytes());
+				int length = mainInterface.socketReceive(buf, LOGIN_TIMEOUT);
 				if (new String(buf, 0, length).equals("OK")) {
 					publishProgress("Station Login Success");
 				} else {
@@ -31,13 +44,13 @@ public class ConnectionFragment extends Fragment {
 			} catch (Exception e) {
 				publishProgress(e.toString());
 			}
-			callback.setSocketLocked(false);
+			mainInterface.setSocketLocked(false);
 			return null;
 		}
 
 		@Override
 		protected void onProgressUpdate(String... msg) {
-			callback.toastShow(msg[0]);
+			mainInterface.toastShow(msg[0]);
 		}
 	}
 
@@ -45,11 +58,12 @@ public class ConnectionFragment extends Fragment {
 
 		@Override
 		protected Void doInBackground(Void... v) {
-			callback.setSocketLocked(true);
+			mainInterface.setSocketLocked(true);
 			try {
 				byte[] buf = new byte[32];
-				callback.socketSend("IP".getBytes());
-				int length = callback.socketReceive(buf, GET_IP_TIMEOUT);
+				mainInterface.socketFlush(buf);
+				mainInterface.socketSend("IP".getBytes());
+				int length = mainInterface.socketReceive(buf, GET_IP_TIMEOUT);
 				String str = new String(buf, 0, length);
 				if (str.equals("FAIL")) {
 					publishProgress("Get Station IP Fail");
@@ -62,31 +76,20 @@ public class ConnectionFragment extends Fragment {
 			} catch (Exception e) {
 				publishProgress(e.toString());
 			}
-			callback.setSocketLocked(false);
+			mainInterface.setSocketLocked(false);
 			return null;
 		}
 
 		@Override
 		protected void onProgressUpdate(String... msg) {
-			callback.toastShow(msg[0]);
+			mainInterface.toastShow(msg[0]);
 		}
 	}
-
-	private static final int LOGIN_TIMEOUT = 50000;
-	private static final int GET_IP_TIMEOUT = 5000;
-	private MainInterface callback = null;
-	private EditText editCxnName = null;
-	private EditText editCxnPassword = null;
-	private Button btnCxnLogin = null;
-	private Button btnCxnIP = null;
-	private SharedPreferences sp = null;
-	private String name = null;
-	private String password = null;
 
 	@Override
 	public void onAttach(Context context) {
 		super.onAttach(context);
-		callback = (MainInterface)context;
+		mainInterface = (MainInterface)context;
 		sp = context.getSharedPreferences("IP", Context.MODE_PRIVATE);
 	}
 
@@ -103,28 +106,28 @@ public class ConnectionFragment extends Fragment {
 		btnCxnAp.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (callback.getSocketLocked()) {
-					callback.toastShow("Socket Occupied");
+				if (mainInterface.getSocketLocked()) {
+					mainInterface.toastShow("Socket Occupied");
 				} else {
-					callback.setIP(MainActivity.IP_AP);
+					mainInterface.setIP(MainActivity.IP_AP);
 					setStationWidgetEnabled(true);
-					callback.toastShow("Access Point IP Applied");
+					mainInterface.toastShow("Access Point IP Applied");
 				}
 			}
 		});
 		btnCxnSta.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (callback.getSocketLocked()) {
-					callback.toastShow("Socket Occupied");
+				if (mainInterface.getSocketLocked()) {
+					mainInterface.toastShow("Socket Occupied");
 				} else {
 					String ip = sp.getString("ip", MainActivity.IP_INVALID);
 					if (ip.equals(MainActivity.IP_INVALID)) {
-						callback.toastShow("Station IP Invalid, Not Applied");
+						mainInterface.toastShow("Station IP Invalid, Not Applied");
 					} else {
-						callback.setIP(ip);
+						mainInterface.setIP(ip);
 						setStationWidgetEnabled(false);
-						callback.toastShow("Station IP Applied");
+						mainInterface.toastShow("Station IP Applied");
 					}
 				}
 			}
@@ -135,9 +138,9 @@ public class ConnectionFragment extends Fragment {
 				name = editCxnName.getText().toString();
 				password = editCxnPassword.getText().toString();
 				if (name.equals("") || password.equals("")) {
-					callback.toastShow("Field Empty");
-				} else if (callback.getSocketLocked()) {
-					callback.toastShow("Socket Occupied");
+					mainInterface.toastShow("Field Empty");
+				} else if (mainInterface.getSocketLocked()) {
+					mainInterface.toastShow("Socket Occupied");
 				} else {
 					new CxnLoginAsyncTask().execute();
 				}
@@ -146,8 +149,8 @@ public class ConnectionFragment extends Fragment {
 		btnCxnIP.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (callback.getSocketLocked()) {
-					callback.toastShow("Socket Occupied");
+				if (mainInterface.getSocketLocked()) {
+					mainInterface.toastShow("Socket Occupied");
 				} else {
 					new CxnIPAsyncTask().execute();
 				}
@@ -170,7 +173,7 @@ public class ConnectionFragment extends Fragment {
 		password = null;
 		name = null;
 		sp = null;
-		callback = null;
+		mainInterface = null;
 		super.onDetach();
 	}
 
